@@ -1,0 +1,89 @@
+python -m venv venv
+venv\scripts\activate
+pip install django
+django-admin startproject journal
+cd journal
+python manage.py startapp nypost
+
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py shell
+from nypost.models import *
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import Sum
+
+
+u1=User.objects.create_user('AutorXXX')
+u2=User.objects.create_user('Autor123')
+Author.objects.create(user=u1)
+Author.objects.create(user=u2)
+
+c1=Category.objects.create(cat='Наука')
+c2=Category.objects.create(cat='Политика')
+c3=Category.objects.create(cat='Спорт')
+c4=Category.objects.create(cat='Экономика')
+c5=Category.objects.create(cat='sport')
+
+a1 = Author.objects.last()
+a2 = Author.objects.get(pk=1)
+
+p1=Post.objects.create(author=a1, heading = 'Автомобили Mercedes-Benz оснастят «суперкомпьютерами»', text = 'Компания Mercedes-Benz объявила, что станет первым автопроизводителем в мире, который создаст собственную навигацию на базе платформы Google. Новая функция будет учитывать автомобильные данные, использовать новейшую операционную систему и является лишь началом долгосрочного сотрудничества.')
+p2=Post.objects.create(author=a2, heading = '«СПАРТАК» С МИНИМАЛЬНЫМ СЧЕТОМ ПОБЕДИЛ «ЛОКОМОТИВ» В ПЕРВОМ МАТЧЕ ЧЕТВЕРТЬФИНАЛА КУБКА РОССИИ', text = 'Встреча прошла на стадионе «РЖД Арена» и завершилась со счетом 0:1. Победный гол забил полузащитник Данил Пруцев, отличившийся на 16‑й минуте после удара из‑за пределов штрафной. На 78‑й минуте главный арбитр Владислав Безбородов после просмотра VAR отменил гол защитника «красно‑зеленых» Станислава Магкеева из‑за офсайда, в котором находился Франсуа Камано.')
+p3=Post.objects.create(author=a2,type = 'articl', heading = 'Экономисты оценили стоимость мер из послания Путина', text = 'Новое послание президента России Владимира Путина Федеральному собранию, состоявшееся 21 февраля, стало одним из самых «недорогих» за последние годы: согласно собранным РБК оценкам экономистов, стоимость предложенных мер в среднем составит 400–500 млрд руб. Для сравнения: в 2021 году меры из послания оценивались экспертным сообществом в 1,2 трлн руб. (при прямых расходах — порядка 400 млрд), а в 2020-м Минфин заявлял, что послание потребует дополнительных ассигнований в размере более 4 трлн руб. В прошлом году послание не состоялось. За 2022 год инфляция в России составила почти 12% (в реальном выражении текущая стоимость денег снизилась).')
+p4=Post.objects.create(author=a1,type = 'articl', heading = 'Косметолог перечислила россиянам четыре способа избежать раннего старения', text = 'Косметолог Энтель посоветовала исключить курение для профилактики раннего старения. Российский косметолог Татьяна Энтель перечислила четыре простых способа избежать преждевременного старения. Соответствующие комментарии приводит газета «Известия». Так, специалист объяснила, что причинами ранних изменений во внешности являются недостаток сна, а также наличие большого количества сахара в рационе. «И заключительным пунктом, который тоже ни в коем случае нельзя сбрасывать со счетов, становится генетика», — раскрыла доктор.')
+
+
+p4.category_post.add(c4)
+p3.category_post.add(c1,c2)
+p2.category_post.add(c5,c3)
+p1.category_post.add(c4,c3)
+
+
+com1=Comment.objects.create(post=p1,user=u1,text_comment='Интересно')
+com2=Comment.objects.create(post=p2,user=u2,text_comment='Было дело')
+com3=Comment.objects.create(post=p3,user=u2,text_comment='баян')
+com4=Comment.objects.create(post=p4,user=u1,text_comment='где-то это уже было')
+
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=2).dislike()
+Comment.objects.get(pk=3).like()
+Comment.objects.get(pk=3).like()
+Comment.objects.get(pk=4).dislike()
+Comment.objects.get(pk=4).dislike()
+Comment.objects.get(pk=4).dislike()
+
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=2).like()
+Post.objects.get(pk=2).like()
+Post.objects.get(pk=3).dislike()
+Post.objects.get(pk=3).dislike()
+Post.objects.get(pk=3).dislike()
+Post.objects.get(pk=3).dislike()
+Post.objects.get(pk=4).dislike()
+Post.objects.get(pk=4).dislike()
+Post.objects.get(pk=4).like()
+
+Author.objects.get(pk=1).update_rating()
+Author.objects.get(pk=2).update_rating()
+
+
+best_a=Author.objects.order_by('-rating').first()
+best_a.user
+best_a.rating
+Author.objects.order_by('-rating').values('user','rating').first()
+
+
+Post.objects.order_by('-rating').values('date_create','author', 'rating','heading').first()
+best_p = Post.objects.order_by('-rating').first()
+best_p.preview()
+
+Comment.objects.all().values('date_create_comment','user','rating','text_comment')
+
+
+python manage.py createsuperuser
