@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from django.shortcuts import render
 
@@ -52,12 +52,10 @@ class PostDetail(DetailView):
     context_object_name = 'post'
 
 class PostSearch(ListView):
-    form_class = PostForm
-    # Модель всё та же, но мы хотим получать информацию по отдельному товару
     model = Post
-    # Используем другой шаблон — new.html
     template_name = 'search.html'
-    # Название объекта, в котором будет выбранный пользователем продукт
+    context_object_name = 'post'
+
     def get_queryset(self):
         queryset = super().get_queryset()
         self.filterset = PostFilter(self.request.GET, queryset)
@@ -65,7 +63,6 @@ class PostSearch(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Добавляем в контекст объект фильтрации.
         context['filterset'] = self.filterset
         context['time_now'] = datetime.utcnow()
         return context
