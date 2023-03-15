@@ -1,10 +1,7 @@
 from datetime import datetime
 
-from django.shortcuts import render
-
-# Create your views here.
-from django.views.generic import ListView, DetailView, CreateView
-
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .filters import PostFilter
 from .forms import PostForm
 from .models import Post
@@ -15,6 +12,7 @@ class PostsList(ListView):
     model = Post
     # # Поле, которое будет использоваться для сортировки объектов
     ordering = '-date_create'
+    queryset = Post.objects.filter(type='NEWS')
     # # Указываем имя шаблона, в котором будут все инструкции о том,
     # # как именно пользователю должны быть показаны наши объекты
     template_name = 'news.html'
@@ -51,6 +49,7 @@ class PostDetail(DetailView):
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'post'
 
+
 class PostSearch(ListView):
     model = Post
     template_name = 'search.html'
@@ -66,3 +65,44 @@ class PostSearch(ListView):
         context['filterset'] = self.filterset
         context['time_now'] = datetime.utcnow()
         return context
+
+
+class NewsCreate(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'new_edit.html'
+
+    def form_valid(self, form):
+        news = form.save(commit=False)
+        news._type = 'NE'
+        return super().form_valid(form)
+
+
+class ArticleCreate(CreateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'article_edit.html'
+
+    def form_valid(self, form):
+        article = form.save(commit=False)
+        article._type = 'AR'
+        return super().form_valid(form)
+
+
+class NewsUpdate(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'new_edit.html'
+
+
+class ArticleUpdate(UpdateView):
+    form_class = PostForm
+    model = Post
+    template_name = 'article_edit.html'
+
+
+class PostDelete(DeleteView):
+    model = Post
+    template_name = 'new_delete.html'
+    success_url = reverse_lazy('all_news')
+
