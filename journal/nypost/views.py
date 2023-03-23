@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .filters import PostFilter
@@ -12,7 +13,7 @@ class PostsList(ListView):
     model = Post
     # # Поле, которое будет использоваться для сортировки объектов
     ordering = '-date_create'
-    queryset = Post.objects.filter(type='NEWS')
+    #queryset = Post.objects.filter(type='NEWS')
     # # Указываем имя шаблона, в котором будут все инструкции о том,
     # # как именно пользователю должны быть показаны наши объекты
     template_name = 'news.html'
@@ -67,10 +68,11 @@ class PostSearch(ListView):
         return context
 
 
-class NewsCreate(CreateView):
+class NewsCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'new_edit.html'
+    permission_required = 'nypost.add_post'
 
     def form_valid(self, form):
         news = form.save(commit=False)
@@ -78,10 +80,11 @@ class NewsCreate(CreateView):
         return super().form_valid(form)
 
 
-class ArticleCreate(CreateView):
+class ArticleCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'article_edit.html'
+    permission_required = 'nypost.add_post'
 
     def form_valid(self, form):
         article = form.save(commit=False)
@@ -89,20 +92,22 @@ class ArticleCreate(CreateView):
         return super().form_valid(form)
 
 
-class NewsUpdate(UpdateView):
+class NewsUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'new_edit.html'
+    permission_required = 'nypost.change_post'
 
 
-class ArticleUpdate(UpdateView):
+class ArticleUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
-    template_name = 'article_edit.html'
+    permission_required = 'nypost.change_post'
 
 
 class PostDelete(DeleteView):
     model = Post
     template_name = 'new_delete.html'
     success_url = reverse_lazy('all_news')
+    permission_required = 'nypost.delete_post'
 
