@@ -39,6 +39,7 @@ class Category(models.Model):
         (education, 'Образование')
     ]
     cat = models.CharField(max_length=25, choices=CATEGORIES, default=politics)
+    subscribers = models.ManyToManyField(User, blank=True, null=True, related_name='categories')
 
     def __str__(self):
         return self.cat.title()
