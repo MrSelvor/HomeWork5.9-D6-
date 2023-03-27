@@ -1,46 +1,49 @@
 {% extends 'flatpages/default.html' %}
-{% load custom_filters %}
 
+{% load censor %}
 
 {% block title %}
-Post
+Posts
 {% endblock title %}
 
 {% block content %}
-<h1>Новости и статьи</h1>
+<h1>Все новости и статьи</h1>
+<h3>Всего публикаций - {{ page_obj.paginator.count }}</h3>
 
-   <hr>
 {% if is_not_subscriber %}
 <p class="text_center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
 {% endif %}
+
+
    <hr>
-{% if post %}
+   {% if category_list %}
        <table>
            <tr>
                <td>Заголовок</td>
-               <td>Дата публикации</td>
-               <td>Текст</td>
                <td>Категория</td>
+               <td>Дата публикации</td>
+               <td>Превью текста</td>
+
+
            </tr>
-           {% for news in category_news_list %}
+
+           {% for post in post %}
            <tr>
-               <td>{{ news.title|censor }}</td>
-               <td>{{ news.time_created }}</td>
-               <td>{{ news.text|truncatewords:20|censor }}</td>
-               <td>{{ news.categories }}</td>
+               <td>{{ post.heading|censor }}</td>
                <td>
-                   {% for category in news.categories.all %}
-                   <a href="{% url 'category_list' category.id %}">{{category}}</a>
+                   {% for category in post.categories.all %}
+                   <a href="{% url 'category_list' category.id %}">{{ category.get_cat_name_display }}</a>
                    {% endfor %}
                </td>
+               <td>{{ post.date_create|date:'d M Y' }}</td>
+               <td>{{ post.text|truncatewords:20|censor }}</td>
            </tr>
            {% endfor %}
+
        </table>
-{% else %}
-<h2>Новостей нет</h2>
-{% endif %}
-
-
+   {% else %}
+       <h2>Никто ничего не натворил</h2>
+   {% endif %}
 
 
 {% endblock content %}

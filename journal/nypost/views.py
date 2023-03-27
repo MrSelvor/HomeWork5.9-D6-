@@ -113,16 +113,12 @@ class PostDelete(DeleteView):
     success_url = reverse_lazy('all_news')
     permission_required = 'nypost.delete_post'
 
-class CategoryListView(ListView):
+class CategoryListView(DetailView):
     model = Post
     template_name = 'categories.html'
-    context_object_name = 'category'
+    context_object_name = 'category_list'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['is_not_subscriber'] = self.request.user not in self.categories.subscribers.all()
-        context['category'] = self.categories
-        return context
+
 @login_required
 def subscribe(request, pk):
     user = request.user
