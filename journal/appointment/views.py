@@ -1,3 +1,4 @@
+from django.dispatch import receiver
 from django.shortcuts import render, reverse, redirect
 from django.views import View
 from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
@@ -5,6 +6,24 @@ from datetime import datetime
 
 from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
 from .models import Appointment
+from django.db.models.signals import post_save
+from django.core.mail import mail_managers
+
+@receiver(post_save, sender=Appointment)
+def notify_managers_appointment(sender, instance, created, **kwargs):
+    # в зависимости от того, есть ли такой объект уже в базе данных или нет, тема письма будет разная
+    if created:
+        subject = f'{instance.client_name} {instance.date.strftime("%d %m %Y")}'
+    else:
+        subject = f'Appointment changed for {instance.client_name} {instance.date.strftime("%d %m %Y")}'
+
+    mail_managers(
+        subject=subject,
+        message=instance.message,
+    )
+
+# коннектим наш сигнал к функции обработчику и указываем, к какой именно модели после сохранения привязать функцию
+post_save.connect(notify_managers_appointment, sender=Appointment)
 
 
 class AppointmentView(View):
@@ -39,3 +58,6 @@ class AppointmentView(View):
         msg.send()  # отсылаем
 
         return redirect('appointments:make_appointment')
+
+
+# создаём функцию-обработчик с параметрами под регистрацию сигнала

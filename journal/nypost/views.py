@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .filters import PostFilter
@@ -113,11 +113,21 @@ class PostDelete(DeleteView):
     success_url = reverse_lazy('all_news')
     permission_required = 'nypost.delete_post'
 
-class CategoryListView(DetailView):
+class CategoryListView(ListView):
     model = Post
     template_name = 'categories.html'
     context_object_name = 'category_list'
 
+    def get_queryset(self):
+        self.categories = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(categories=self.categories).order_by('-time_created')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.categories.subscribers.all()
+        context['category'] = self.categories
+        return context
 
 @login_required
 def subscribe(request, pk):
