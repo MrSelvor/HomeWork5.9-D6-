@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from journal.nypost import signals
+
 
 
 class NypostConfig(AppConfig):
@@ -7,4 +7,4 @@ class NypostConfig(AppConfig):
     name = 'nypost'
 
     def ready(self):
-        import journal.nypost.signals
+        import nypost.signals
