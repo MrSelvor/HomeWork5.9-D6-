@@ -119,14 +119,14 @@ class CategoryListView(ListView):
     context_object_name = 'category_list'
 
     def get_queryset(self):
-        self.categories = get_object_or_404(Category, id=self.kwargs['pk'])
-        queryset = Post.objects.filter(categories=self.categories).order_by('-time_created')
+        self.category_post = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(category_post=self.category_post).order_by('-date_create')
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_not_subscriber'] = self.request.user not in self.categories.subscribers.all()
-        context['category'] = self.categories
+        context['is_not_subscriber'] = self.request.user not in self.category_post.subscribers.all()
+        context['category_post'] = self.category_post
         return context
 
 @login_required

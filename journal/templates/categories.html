@@ -11,7 +11,7 @@ Posts
 <h3>Всего публикаций - {{ page_obj.paginator.count }}</h3>
 
 {% if is_not_subscriber %}
-<p class="text_center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
+<p class="text_center"><a href="{% url 'subscribe' category_post.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
 {% endif %}
 
 
@@ -27,12 +27,12 @@ Posts
 
            </tr>
 
-           {% for post in post %}
+           {% for post in category_list %}
            <tr>
                <td>{{ post.heading|censor }}</td>
                <td>
-                   {% for category in post.categories.all %}
-                   <a href="{% url 'category_list' category.id %}">{{ category.get_cat_name_display }}</a>
+                   {% for category_post in post.category_post.all %}
+                   <a href="{% url 'category_list' category_post.id %}">{{ category.get_cat_name_display }}</a>
                    {% endfor %}
                </td>
                <td>{{ post.date_create|date:'d M Y' }}</td>
