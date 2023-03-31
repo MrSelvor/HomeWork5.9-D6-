@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from allauth.account.forms import SignupForm
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import Sum
 from django.urls import reverse
@@ -39,7 +40,7 @@ class Category(models.Model):
         (education, 'Образование')
     ]
     cat = models.CharField(max_length=25, choices=CATEGORIES, default=politics)
-    subscribers = models.ManyToManyField(User, blank=True, null=True, related_name='categories')
+    subscribers = models.ManyToManyField(User, blank=True, related_name='categories')
 
     def __str__(self):
         return self.cat.title()
@@ -76,7 +77,8 @@ class Post(models.Model):
         return f'{self.heading.title()}: {self.text[:30]}'
 
     def get_absolute_url(self):
-        return reverse('all_news')
+        return reverse('all_news', args=[str(self.id)])
+
 
 
 class Postcategory(models.Model):
@@ -98,3 +100,12 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
+
+class BasicSignupForm(SignupForm):
+
+    def save(self, request):
+        user = super(BasicSignupForm, self).save(request)
+        common_group = Group.objects.get(name='common')
+        common_group.user_set.add(user)
+        return user

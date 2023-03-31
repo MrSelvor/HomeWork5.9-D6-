@@ -13,7 +13,7 @@ def send_notifications(preview, pk, title, subscribers):
         'post_created_email.html',
         {
             'text': preview,
-            'link': f'{settings.SITE_URL}/posts/{pk}'
+            'link': f'{settings.SITE_URL}/news/{pk}'
             # 'link': f'http://127.0.0.1:8000/posts/{pk}'
         }
     )
@@ -22,7 +22,6 @@ def send_notifications(preview, pk, title, subscribers):
         subject=title,
         body='',
         from_email=settings.DEFAULT_FROM_EMAIL,
-        # from_email='ann.annannanna@yandex.ru',
         to=subscribers,
     )
 

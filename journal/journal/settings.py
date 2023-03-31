@@ -165,9 +165,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
-ACCOUNT_FORMS = {'signup': 'sign.models.CommonSignupForm'}
+ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 
 LOGIN_REDIRECT_URL = '/'  #'/appointment/'
 
@@ -189,3 +189,5 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
 # если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+
+SITE_URL = 'http://127.0.0.1:8000'
