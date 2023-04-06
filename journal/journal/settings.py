@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+import redis
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -27,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'nypost',
+    # 'nypost',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
@@ -87,9 +87,7 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'journal.wsgi.application'
-
 
 AUTHENTICATION_BACKENDS = [
 
@@ -100,8 +98,6 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -111,7 +107,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -131,7 +126,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -142,7 +136,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -158,7 +151,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-
 LOGIN_URL = '/accounts/login/'
 
 ACCOUNT_EMAIL_REQUIRED = True
@@ -169,12 +161,9 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
 
-LOGIN_REDIRECT_URL = '/'  #'/appointment/'
-
+LOGIN_REDIRECT_URL = '/'  # '/appointment/'
 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/signup/'
-
-
 
 EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
 EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
@@ -183,7 +172,6 @@ EMAIL_HOST_PASSWORD = 'xgijumbqgqskmeyg'  # пароль от почты
 EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но включать его здесь обязательно
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
 # формат даты, которую будет воспринимать наш задачник (вспоминаем модуль по фильтрам)
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
@@ -191,3 +179,15 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
 SITE_URL = 'http://127.0.0.1:8000'
+
+CELERY_BROKER_URL = 'redis://virsol.92@mail.ru:1212QWqw!@redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com:10970'
+CELERY_RESULT_BACKEND = 'redis://virsol.92@mail.ru:1212QWqw!@redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com:10970'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+# red = redis.Redis(
+#     host='redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com',
+#     port=10970,
+#     password='RlH330Nd4GMpKv5jS0loVpZaAj4ZmYt0'
+# )
