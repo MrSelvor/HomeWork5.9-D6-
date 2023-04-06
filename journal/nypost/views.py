@@ -110,7 +110,7 @@ class ArticleUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
 class PostDelete(DeleteView):
     model = Post
     template_name = 'new_delete.html'
-    success_url = reverse_lazy('all_news')
+    success_url = reverse_lazy('news')
     permission_required = 'nypost.delete_post'
 
 class CategoryListView(ListView):

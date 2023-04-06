@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
-import redis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'nypost',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_filters',
@@ -49,7 +47,7 @@ INSTALLED_APPS = [
     'protect',
     'appointment',
     'nypost.apps.NypostConfig',
-   # 'django_apscheduler',
+    #'django_apscheduler',
 ]
 
 SITE_ID = 1
