@@ -29,10 +29,10 @@ def send_notifications(preview, pk, heading, subscribers):
 @shared_task
 def notify_about_new_post(pk):
     post = Post.objects.get(pk=pk)
-    categories = post.categories.all()
+    category_post = post.category_post.all()
     subscribers_emails = []
 
-    for cat in categories:
+    for cat in category_post:
         subscribers = cat.subscribers.all()
         subscribers_emails += [s.email for s in subscribers]
 
@@ -40,11 +40,10 @@ def notify_about_new_post(pk):
 
 @shared_task
 def notify_every_week():
-   #today = datetime.datetime.now()
    last_week = datetime.datetime.now() - datetime.timedelta(days=7)
-   posts = Post.objects.filter(time_in__gte=last_week)
-   categories = set(posts.values_list('categories__cat_name', flat=True))
-   subscribers = set(Category.objects.filter(cat_name__in=categories).values_list('subscribers__email', flat=True))
+   posts = Post.objects.filter(date_create__gte=last_week)
+   category_post = set(posts.values_list('categories__cat_name', flat=True))
+   subscribers = set(Category.objects.filter(cat__in=category_post).values_list('subscribers__email', flat=True))
 
    html_content = render_to_string(
        'weekly_post.html',
