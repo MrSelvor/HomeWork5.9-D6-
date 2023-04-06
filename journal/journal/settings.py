@@ -44,15 +44,12 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-
     'allauth.socialaccount.providers.google',
     'sign',
     'protect',
     'appointment',
-
     'nypost.apps.NypostConfig',
-    'django_apscheduler',
-
+   # 'django_apscheduler',
 ]
 
 SITE_ID = 1
@@ -180,14 +177,9 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
 SITE_URL = 'http://127.0.0.1:8000'
 
-CELERY_BROKER_URL = 'redis://journal:RlH330Nd4GMpKv5jS0loVpZaAj4ZmYt0@redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com:10970'
-CELERY_RESULT_BACKEND = 'redis://journal:RlH330Nd4GMpKv5jS0loVpZaAj4ZmYt0@redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com:10970'
+CELERY_BROKER_URL = 'redis://default:RlH330Nd4GMpKv5jS0loVpZaAj4ZmYt0@redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com:10970'
+CELERY_RESULT_BACKEND = 'redis://default:RlH330Nd4GMpKv5jS0loVpZaAj4ZmYt0@redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com:10970'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-# red = redis.Redis(
-#     host='redis-10970.c55.eu-central-1-1.ec2.cloud.redislabs.com',
-#     port=10970,
-#     password='RlH330Nd4GMpKv5jS0loVpZaAj4ZmYt0'
-# )
