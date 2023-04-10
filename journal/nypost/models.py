@@ -1,5 +1,6 @@
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User, Group
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Sum
 from django.urls import reverse
@@ -76,8 +77,16 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.heading.title()}: {self.text[:30]}'
 
-    def get_absolute_url(self):
-        return reverse('all_news', args=[str(self.id)])
+    # def get_absolute_url(self):
+    #     return reverse('news', #args=[str(self.id)]
+    #                    )
+
+    def get_absolute_url(self):  # добавим абсолютный путь, чтобы после создания нас перебрасывало на страницу с товаром
+        return f'/news/{self.id}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'news-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
 
 

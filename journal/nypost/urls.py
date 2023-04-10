@@ -2,6 +2,8 @@ from django.urls import path
 # Импортируем созданное нами представление
 from .views import PostsList, PostDetail, PostSearch, NewsCreate, NewsUpdate, PostDelete, CategoryListView, subscribe
 
+
+
 urlpatterns = [
    # path — означает путь.
    # В данном случае путь ко всем товарам у нас останется пустым,

@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -8,7 +9,11 @@ from .filters import PostFilter
 from .forms import PostForm
 from .models import Post, Category
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
 
+#@cache_page(60) -если ставлю декоратор тут, но выдает ошибку ниже
+# path('', PostsList.as_view(), name='news'),
+#AttributeError: 'function' object has no attribute 'as_view'
 
 class PostsList(ListView):
     # Указываем модель, объекты которой мы будем выводить
@@ -51,6 +56,20 @@ class PostDetail(DetailView):
     template_name = 'new.html'
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'post'
+
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        obj = cache.get(f'post-{self.kwargs["pk"]}',
+                        None)  # кэш очень похож на словарь, и метод get действует так же.
+        # Он забирает значение по ключу, если его нет, то забирает None.
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+        return obj
+
+
+
 
 
 class PostSearch(ListView):
